@@ -49,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
                     decoration: InputDecoration(
                       labelText: 'Email',
                       border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xFFFF5900)),
+                        borderSide: BorderSide(color: Color(0xFF1B571D)),
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
