@@ -39,7 +39,6 @@ class _LoginPageState extends State<LoginPage> {
                   width: 150,
                   height: 150,
                 ),
-                const SizedBox(height: 20),
                 SizedBox(
                   width: 325,
                   child: TextField(  

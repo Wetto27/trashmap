@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:trashmap/pages/map_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,7 +19,6 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.white
                     ),),
       ),
-      body: mapPage("3"),
     );
   }
 }

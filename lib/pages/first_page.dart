@@ -53,7 +53,7 @@ class _firstPageState extends State<firstPage> {
                     onPressed: register,
                     child: Text('Criar Conta',
                     style: TextStyle(
-                      color: Color(0xFF1B571D)
+                      color: Color(0xFF1B571D),
                     ),
                   ),
                 ),

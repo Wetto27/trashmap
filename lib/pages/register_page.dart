@@ -21,7 +21,6 @@ class _RegisterPageState extends State<RegisterPage> {
       Navigator.pushReplacementNamed(context, '/login');
     }
   }
-
   bool _showPassword = false;
   @override
   Widget build(BuildContext context) {
