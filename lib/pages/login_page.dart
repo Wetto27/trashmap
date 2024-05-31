@@ -35,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
-                  'assets/images/orangeicon.png',
+                  'assets/images/greentruckicon.png',
                   width: 150,
                   height: 150,
                 ),
@@ -84,7 +84,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: ElevatedButton(
                     style: const ButtonStyle(
                       backgroundColor: MaterialStatePropertyAll<Color>(
-                        Color(0xFFFF5900),
+                        Color(0xFF1B571D),
                       ),
                     ),
                     onPressed: login,

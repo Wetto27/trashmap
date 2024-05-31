@@ -25,12 +25,17 @@ class _firstPageState extends State<firstPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Image.asset(
+                  'assets/images/greentruckicon.png',
+                  width: 150,
+                  height: 150,
+                ),
                 SizedBox(
                   width: 250,
                   child: ElevatedButton(
                     style: const ButtonStyle(
                       backgroundColor: MaterialStatePropertyAll<Color>(
-                        Color(0xFFFF5900),
+                        Color(0xFF1B571D),
                       ),
                     ),
                     onPressed: login,
@@ -48,7 +53,7 @@ class _firstPageState extends State<firstPage> {
                     onPressed: register,
                     child: Text('Criar Conta',
                     style: TextStyle(
-                      color: Color(0xFFFF5900)
+                      color: Color(0xFF1B571D)
                     ),
                   ),
                 ),

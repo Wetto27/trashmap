@@ -27,7 +27,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 255, 89, 0),
+        backgroundColor: const Color(0xFF1B571D),
         centerTitle: true,
         title: const Text('Pagina de Registro',
         style: TextStyle(
@@ -92,7 +92,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 child: ElevatedButton(
                   style: const ButtonStyle(
                     backgroundColor: MaterialStatePropertyAll<Color>(
-                      Color.fromARGB(255, 255, 89, 0),
+                      Color(0xFF1B571D),
                     ),
                   ),
                   onPressed: register,

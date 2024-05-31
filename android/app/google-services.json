@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "182989999223",
+    "project_id": "trashmap-7c4e9",
+    "storage_bucket": "trashmap-7c4e9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:182989999223:android:0a3a2a48d07d0f7b3d8a72",
+        "android_client_info": {
+          "package_name": "com.trashmapdevs.trashmap"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPCBvdjymPaEGOWuHe6PZ148Z2rNv-5Mc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

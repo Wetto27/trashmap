@@ -1,8 +1,23 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  package="com.trashmapdevs.trashmap">
+
+     <!-- added permissions -->
+         <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+<uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
     <application
         android:label="trashmap"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
+        <!-- added api key -->
+            <meta-data android:name="com.google.android.geo.API_KEY"
+               android:value="AIzaSyDnkiL2mysLl3d2rDgjRJ7-6bA7t-x-9JQ"/>
+
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
