@@ -35,10 +35,18 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
+<<<<<<< HEAD
                   'assets/images/greentruckicon.png',
                   width: 150,
                   height: 150,
                 ),
+=======
+                  'assets/images/orangeicon.png',
+                  width: 150,
+                  height: 150,
+                ),
+                const SizedBox(height: 20),
+>>>>>>> d3ffb2e69186f4f721ccd473852a3ffccf1dc822
                 SizedBox(
                   width: 325,
                   child: TextField(  
@@ -48,7 +56,11 @@ class _LoginPageState extends State<LoginPage> {
                     decoration: InputDecoration(
                       labelText: 'Email',
                       border: OutlineInputBorder(
+<<<<<<< HEAD
                         borderSide: BorderSide(color: Color(0xFF1B571D)),
+=======
+                        borderSide: BorderSide(color: Color(0xFFFF5900)),
+>>>>>>> d3ffb2e69186f4f721ccd473852a3ffccf1dc822
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
@@ -83,7 +95,11 @@ class _LoginPageState extends State<LoginPage> {
                   child: ElevatedButton(
                     style: const ButtonStyle(
                       backgroundColor: MaterialStatePropertyAll<Color>(
+<<<<<<< HEAD
                         Color(0xFF1B571D),
+=======
+                        Color(0xFFFF5900),
+>>>>>>> d3ffb2e69186f4f721ccd473852a3ffccf1dc822
                       ),
                     ),
                     onPressed: login,

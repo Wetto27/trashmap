@@ -21,12 +21,20 @@ class _RegisterPageState extends State<RegisterPage> {
       Navigator.pushReplacementNamed(context, '/login');
     }
   }
+<<<<<<< HEAD
+=======
+
+>>>>>>> d3ffb2e69186f4f721ccd473852a3ffccf1dc822
   bool _showPassword = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+<<<<<<< HEAD
         backgroundColor: const Color(0xFF1B571D),
+=======
+        backgroundColor: const Color.fromARGB(255, 255, 89, 0),
+>>>>>>> d3ffb2e69186f4f721ccd473852a3ffccf1dc822
         centerTitle: true,
         title: const Text('Pagina de Registro',
         style: TextStyle(
@@ -91,7 +99,11 @@ class _RegisterPageState extends State<RegisterPage> {
                 child: ElevatedButton(
                   style: const ButtonStyle(
                     backgroundColor: MaterialStatePropertyAll<Color>(
+<<<<<<< HEAD
                       Color(0xFF1B571D),
+=======
+                      Color.fromARGB(255, 255, 89, 0),
+>>>>>>> d3ffb2e69186f4f721ccd473852a3ffccf1dc822
                     ),
                   ),
                   onPressed: register,
