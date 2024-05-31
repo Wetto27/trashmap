@@ -19,6 +19,10 @@ class AppWidget extends StatelessWidget {
         '/register':(context) => const RegisterPage(),
         '/home': (context) => const HomePage(),
       },
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFF1B571D)),
+        useMaterial3: true,
+      ),
     );
   }
 }
