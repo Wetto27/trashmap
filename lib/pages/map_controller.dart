@@ -31,7 +31,12 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('live location tracker'),
+        backgroundColor: const Color(0xFF1B571D),
+        centerTitle: true,
+        title: const Text('TRASHMAP',
+                    style: TextStyle(
+                      color: Colors.white
+                    ),),
       ),
       body: Column(
         children: [
