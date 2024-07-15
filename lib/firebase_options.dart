@@ -50,19 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAPCBvdjymPaEGOWuHe6PZ148Z2rNv-5Mc',
-    appId: '1:182989999223:android:0a3a2a48d07d0f7b3d8a72',
-    messagingSenderId: '182989999223',
-    projectId: 'trashmap-7c4e9',
-    storageBucket: 'trashmap-7c4e9.appspot.com',
+    apiKey: 'AIzaSyDYv02W_296o_kMTOrl4DKwSfn_AbP_gG0',
+    appId: '1:580059447245:android:a31c5e05b8c0d58ed64e84',
+    messagingSenderId: '580059447245',
+    projectId: 'trashmap-a9f79',
+    storageBucket: 'trashmap-a9f79.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBomsbDRtqSdxSeB24tXSc-P9m-NtQjdiA',
-    appId: '1:182989999223:ios:5a63e5d812892c7e3d8a72',
-    messagingSenderId: '182989999223',
-    projectId: 'trashmap-7c4e9',
-    storageBucket: 'trashmap-7c4e9.appspot.com',
+    apiKey: 'AIzaSyDxpDN8R_e9R93OX1uhIAoeK_T5lKFM9d8',
+    appId: '1:580059447245:ios:9bf49fb562cb7ae8d64e84',
+    messagingSenderId: '580059447245',
+    projectId: 'trashmap-a9f79',
+    storageBucket: 'trashmap-a9f79.appspot.com',
     iosBundleId: 'com.example.trashmap',
   );
+
 }
