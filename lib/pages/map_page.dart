@@ -14,6 +14,38 @@ class _mapPageState extends State<mapPage> {
   final loc.Location location = loc.Location();
   late GoogleMapController _controller;
   bool _added = false;
+  late BitmapDescriptor customMarker;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeMap();
+    _loadCustomMarker();
+  }
+
+  void _initializeMap() async {
+    await location.getLocation();
+    location.onLocationChanged.listen((loc.LocationData currentLocation) {
+      if (_controller != null) {
+        _controller.animateCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(
+              target: LatLng(currentLocation.latitude!, currentLocation.longitude!),
+              zoom: 14.47,
+            ),
+          ),
+        );
+      }
+    });
+  }
+
+  Future<void> _loadCustomMarker() async {
+    customMarker = await BitmapDescriptor.asset(
+      ImageConfiguration(size: Size(48, 48)),
+      'assets/images/greentruckicon.png',
+    );
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,8 +69,8 @@ class _mapPageState extends State<mapPage> {
                       (element) => element.id == widget.user_id)['longitude'],
                 ),
                 markerId: MarkerId('id'),
-                icon: BitmapDescriptor.defaultMarkerWithHue(
-                    BitmapDescriptor.hueMagenta)),
+               icon: customMarker,
+            ),
           },
           initialCameraPosition: CameraPosition(
               target: LatLng(
