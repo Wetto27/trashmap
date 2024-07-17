@@ -46,17 +46,20 @@ class _MyAppState extends State<MyApp> {
               onPressed: () {
                 _getLocation();
               },
-              child: Text('add my location')),
+              child: Text('armazenar localização')),
           TextButton(
               onPressed: () {
                 _listenLocation();
               },
-              child: Text('enable live location')),
+              child: Text('ativar live tracking')),
           TextButton(
               onPressed: () {
                 _stopListening();
               },
-              child: Text('stop live location')),
+              child: Text('desligar live tracking')),
+              TextButton(
+              onPressed: () {},
+              child: Text('mandar notificação')),
           Expanded(
               child: StreamBuilder(
             stream:
