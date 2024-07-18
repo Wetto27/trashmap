@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trashmap/pages/custom_app_bar.dart';
+import 'package:trashmap/widgets/recyclers/custom_app_bar.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});

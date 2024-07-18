@@ -1,9 +1,9 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
-import 'package:trashmap/pages/custom_app_bar.dart';
-import 'package:trashmap/pages/notification_button.dart';
-import 'package:trashmap/pages/notification_services.dart';
-import 'package:trashmap/pages/top_bar.dart';
+import 'package:trashmap/widgets/recyclers/custom_app_bar.dart';
+import 'package:trashmap/services/notification_button.dart';
+import 'package:trashmap/services/notification_services.dart';
+import 'package:trashmap/widgets/recyclers/top_bar.dart';
 
 class NotificationPage extends StatelessWidget {
   const NotificationPage({super.key});

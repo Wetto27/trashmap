@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:trashmap/pages/app_widget.dart';
-import 'package:trashmap/pages/notification_services.dart';
+import 'package:trashmap/widgets/controllers/app_widget.dart';
+import 'package:trashmap/services/notification_services.dart';
 
 void main() async {
   

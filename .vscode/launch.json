@@ -8,7 +8,7 @@
             "name": "trashmap",
             "request": "launch",
             "type": "dart",
-            "program": "lib/pages/main.dart"
+            "program": "lib/main.dart"
         },
         {
             "name": "trashmap (profile mode)",

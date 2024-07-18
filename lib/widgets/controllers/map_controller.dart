@@ -3,9 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart' as loc;
 import 'package:permission_handler/permission_handler.dart';
-import 'package:trashmap/pages/custom_app_bar.dart';
+import 'package:trashmap/widgets/recyclers/custom_app_bar.dart';
 import 'package:trashmap/pages/map_page.dart';
-import 'package:trashmap/pages/notification_page.dart';
+import 'package:trashmap/services/notification_page.dart';
 
 
 class MapController extends StatefulWidget {

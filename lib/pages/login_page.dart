@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trashmap/pages/custom_app_bar.dart';
+import 'package:trashmap/widgets/recyclers/custom_app_bar.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trashmap/pages/map_controller.dart';
+import 'package:trashmap/widgets/controllers/map_controller.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
