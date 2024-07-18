@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as loc;
+import 'package:trashmap/pages/constants.dart';
 
 class MapPage extends StatefulWidget {
   final String user_id;
@@ -17,11 +21,39 @@ class _MapPageState extends State<MapPage> {
   bool _added = false;
   late BitmapDescriptor customMarker;
 
+  static const LatLng originLocation = LatLng(-22.260631539226832, -45.71273108247909);
+  static const LatLng destinationLocation = LatLng(-22.25700928414701, -45.69673024914108);
+
+  List<LatLng> polylineCoordinates = [];
+
+  void getPolyPoints() async{
+    PolylinePoints polylinePoints = PolylinePoints();
+
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+      googleApiKey: chaveApiGoogle,
+      request: PolylineRequest(
+        origin: PointLatLng(originLocation.latitude, originLocation.longitude), 
+        destination: PointLatLng(destinationLocation.latitude, destinationLocation.longitude), 
+        mode: TravelMode.driving,
+      ),
+    );
+
+    if(result.points.isNotEmpty) {
+      result.points.forEach(
+        (PointLatLng point) => polylineCoordinates.add(
+            LatLng(point.latitude, point.longitude)
+        ),
+      );
+      setState(() {});
+    }
+  }
+
   @override
   void initState() {
-    super.initState();
+    getPolyPoints();
     _initializeMap();
     _loadCustomMarker();
+    super.initState();
   }
 
   void _initializeMap() async {
@@ -61,6 +93,14 @@ class _MapPageState extends State<MapPage> {
         }
         return GoogleMap(
           mapType: MapType.normal,
+          polylines: {
+            Polyline(
+              polylineId: PolylineId("route"),
+              points: polylineCoordinates,
+              color: Color(0xFF1B571D),
+              width: 3
+            ),
+          },
           markers: {
             Marker(
                 position: LatLng(
@@ -71,6 +111,12 @@ class _MapPageState extends State<MapPage> {
                 ),
                 markerId: MarkerId('id'),
                icon: customMarker,
+            ),
+            Marker(markerId: MarkerId("origin"),
+            position: originLocation,
+            ),
+            Marker(markerId: MarkerId("destination"),
+            position: destinationLocation,
             ),
           },
           initialCameraPosition: CameraPosition(

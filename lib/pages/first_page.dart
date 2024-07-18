@@ -46,7 +46,13 @@ class _firstPageState extends State<firstPage> {
                     ),
                   ),
                 ),
-                 const SizedBox(height: 10),
+                Divider(
+                  height: 30,
+                  thickness: 0.5,
+                  color: Color(0xFF1B571D),
+                  indent: 75,
+                  endIndent: 75,
+                ),
                  SizedBox(
                   width: 250,
                     child: OutlinedButton(
