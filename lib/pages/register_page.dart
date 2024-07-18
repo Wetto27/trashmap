@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trashmap/pages/custom_app_bar.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -25,15 +26,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF1B571D),
-        centerTitle: true,
-        title: const Text('Pagina de Registro',
-        style: TextStyle(
-                color: Colors.white
-          ),
-        ),
-      ),
+      appBar: customAppBar(context, 'Pagina de cadastro'),
       body: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
@@ -43,7 +36,7 @@ class _RegisterPageState extends State<RegisterPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
-                'assets/images/orangeicon.png',
+                'assets/images/greentruckicon.png',
                 width: 150,
                 height: 150,
               ),
@@ -90,7 +83,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 width: 325,
                 child: ElevatedButton(
                   style: const ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll<Color>(
+                    backgroundColor: WidgetStatePropertyAll<Color>(
                       Color(0xFF1B571D),
                     ),
                   ),

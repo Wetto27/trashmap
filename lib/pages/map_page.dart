@@ -3,14 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as loc;
 
-class mapPage extends StatefulWidget {
+class MapPage extends StatefulWidget {
   final String user_id;
-  mapPage(this.user_id);
+  MapPage(this.user_id);
+  
   @override
-  _mapPageState createState() => _mapPageState();
+  _MapPageState createState() => _MapPageState();
 }
 
-class _mapPageState extends State<mapPage> {
+class _MapPageState extends State<MapPage> {
   final loc.Location location = loc.Location();
   late GoogleMapController _controller;
   bool _added = false;

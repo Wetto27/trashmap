@@ -1,9 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:trashmap/pages/app_widget.dart';
+import 'package:trashmap/pages/notification_services.dart';
 
 void main() async {
+  
     WidgetsFlutterBinding.ensureInitialized();
+    await NotificationService.initializeNotification();
     await Firebase.initializeApp(
   options: FirebaseOptions(
     apiKey: 'AIzaSyDYv02W_296o_kMTOrl4DKwSfn_AbP_gG0',

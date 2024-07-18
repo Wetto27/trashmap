@@ -34,7 +34,7 @@ class _firstPageState extends State<firstPage> {
                   width: 250,
                   child: ElevatedButton(
                     style: const ButtonStyle(
-                      backgroundColor: MaterialStatePropertyAll<Color>(
+                      backgroundColor: WidgetStatePropertyAll<Color>(
                         Color(0xFF1B571D),
                       ),
                     ),

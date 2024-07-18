@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trashmap/pages/custom_app_bar.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -26,6 +27,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: customAppBar(context, 'Pagina de login'),
       body: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
@@ -82,7 +84,7 @@ class _LoginPageState extends State<LoginPage> {
                   width: 325,
                   child: ElevatedButton(
                     style: const ButtonStyle(
-                      backgroundColor: MaterialStatePropertyAll<Color>(
+                      backgroundColor: WidgetStatePropertyAll<Color>(
                         Color(0xFF1B571D),
                       ),
                     ),

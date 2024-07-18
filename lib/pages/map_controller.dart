@@ -1,21 +1,24 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart' as loc;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:trashmap/pages/custom_app_bar.dart';
 import 'package:trashmap/pages/map_page.dart';
+import 'package:trashmap/pages/notification_page.dart';
 
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class MapController extends StatefulWidget {
+  const MapController({super.key});
+
+  static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   // ignore: library_private_types_in_public_api
-  _MyAppState createState() => _MyAppState();
+  _MapControllerState createState() => _MapControllerState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MapControllerState extends State<MapController> {
   final loc.Location location = loc.Location();
   StreamSubscription<loc.LocationData>? _locationSubscription;
 
@@ -32,14 +35,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF1B571D),
-        centerTitle: true,
-        title: const Text('TRASHMAP',
-                    style: TextStyle(
-                      color: Colors.white
-                    ),),
-      ),
+      appBar: customAppBar(context, 'TRASHMAP'),
       body: Column(
         children: [
           TextButton(
@@ -58,8 +54,10 @@ class _MyAppState extends State<MyApp> {
               },
               child: Text('desligar live tracking')),
               TextButton(
-              onPressed: () {},
-              child: Text('mandar notificação')),
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationPage()));
+              },
+              child: Text('painel de notificações')),
           Expanded(
               child: StreamBuilder(
             stream:
@@ -90,7 +88,7 @@ class _MyAppState extends State<MyApp> {
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) =>
-                                  mapPage(snapshot.data!.docs[index].id)));
+                                  MapPage(snapshot.data!.docs[index].id)));
                         },
                       ),
                     );
