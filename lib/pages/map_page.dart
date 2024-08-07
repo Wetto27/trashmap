@@ -15,6 +15,7 @@ class _MapPageState extends State<MapPage> {
   final loc.Location location = loc.Location();
   late GoogleMapController _controller;
   bool _added = false;
+  Set<Marker> _markers = {};
   late BitmapDescriptor customMarker;
 
   @override
@@ -59,33 +60,32 @@ class _MapPageState extends State<MapPage> {
         if (!snapshot.hasData) {
           return Center(child: CircularProgressIndicator());
         }
+        var userLocationData = snapshot.data!.docs.firstWhere(
+                (element) => element.id == widget.user_id,
+        );
+        _markers.clear();
+        _markers.add(
+            Marker(
+              position: LatLng(
+                userLocationData['latitude'],
+                userLocationData['longitude'],
+              ),
+              markerId: MarkerId('user_location'),
+              icon: customMarker,
+            ),
+          );
+
         return GoogleMap(
           mapType: MapType.normal,
-          markers: {
-            Marker(
-                position: LatLng(
-                  snapshot.data!.docs.singleWhere(
-                      (element) => element.id == widget.user_id)['latitude'],
-                  snapshot.data!.docs.singleWhere(
-                      (element) => element.id == widget.user_id)['longitude'],
-                ),
-                markerId: MarkerId('id'),
-               icon: customMarker,
-            ),
-          },
+          markers: _markers,
           initialCameraPosition: CameraPosition(
               target: LatLng(
-                snapshot.data!.docs.singleWhere(
-                    (element) => element.id == widget.user_id)['latitude'],
-                snapshot.data!.docs.singleWhere(
-                    (element) => element.id == widget.user_id)['longitude'],
+                userLocationData['latitude'],
+                userLocationData['longitude'],
               ),
               zoom: 14.47),
-          onMapCreated: (GoogleMapController controller) async {
-            setState(() {
+          onMapCreated: (GoogleMapController controller) {
               _controller = controller;
-              _added = true;
-            });
           },
         );
       },

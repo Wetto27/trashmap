@@ -124,7 +124,7 @@ class _MapControllerState extends State<MapController> {
       await FirebaseFirestore.instance.collection('location').doc('user1').set({
         'latitude': currentlocation.latitude,
         'longitude': currentlocation.longitude,
-        'name': 'otavio'
+        'name': 'john'
       }, SetOptions(merge: true));
     });
   }
