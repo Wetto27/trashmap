@@ -86,7 +86,7 @@ class _MapPageState extends State<MapPage> {
               zoom: 14.47),
           onMapCreated: (GoogleMapController controller) {
               _controller = controller;
-          },
+          }
         );
       },
     ));

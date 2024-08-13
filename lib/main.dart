@@ -12,8 +12,8 @@ void main() async {
     apiKey: 'AIzaSyDYv02W_296o_kMTOrl4DKwSfn_AbP_gG0',
     appId: '1:580059447245:android:a31c5e05b8c0d58ed64e84',
     messagingSenderId: '580059447245',
-    projectId: 'trashmap-a9f79',
-    storageBucket: 'trashmap-a9f79.appspot.com',
+    projectId: 'trashteste-c635c',
+    storageBucket: 'trashteste-c635c.appspot.com',
   )
 );
   runApp(const AppWidget());
