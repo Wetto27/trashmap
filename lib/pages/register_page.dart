@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:trashmap/widgets/recyclers/custom_app_bar.dart';
+import 'package:trashmap/widgets/recyclers/custom_app_bar_return.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -50,7 +50,7 @@ final TextEditingController workerIdController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(context, 'Pagina de cadastro'),
+      appBar: customAppBarReturn(context, 'Pagina de cadastro'),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(

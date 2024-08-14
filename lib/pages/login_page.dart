@@ -30,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
           .get();
       
       if (userDoc.exists && userDoc.get('isWorker') == true) {
-        Navigator.pushReplacementNamed(context, '/home');
+        Navigator.pushReplacementNamed(context, '/worker_home');
       } else {
         Navigator.pushReplacementNamed(context, '/user_home');
       }

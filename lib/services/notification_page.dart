@@ -1,6 +1,6 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
-import 'package:trashmap/widgets/recyclers/custom_app_bar.dart';
+import 'package:trashmap/widgets/recyclers/custom_app_bar_return.dart';
 import 'package:trashmap/services/notification_button.dart';
 import 'package:trashmap/services/notification_services.dart';
 import 'package:trashmap/widgets/recyclers/top_bar.dart';
@@ -11,7 +11,7 @@ class NotificationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBar(context, 'TRASHMAP'),
+      appBar: customAppBarReturn(context, 'TRASHMAP'),
       backgroundColor: Colors.blue,
       body: Container(
         decoration: BoxDecoration(
