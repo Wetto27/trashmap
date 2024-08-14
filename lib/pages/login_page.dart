@@ -29,16 +29,26 @@ class _LoginPageState extends State<LoginPage> {
           .doc(userCredential.user!.uid)
           .get();
       
-      if (userDoc.exists && userDoc.get('isWorker') == true) {
+    if (userDoc.exists) {
+      String role = userDoc.get('role') ?? 'user'; // Default to 'user' if the role field is missing
+
+      if (role == 'worker') {
         Navigator.pushReplacementNamed(context, '/worker_home');
       } else {
         Navigator.pushReplacementNamed(context, '/user_home');
       }
-    } catch (e) {
+    } else {
+      // Handle case where user data does not exist in Firestore
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login failed: $e')),
+        const SnackBar(content: Text('User data does not exist in Firestore')),
       );
     }
+  } catch (e) {
+    // Handle login errors
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Login failed: $e')),
+    );
+   }
   }
 
   @override

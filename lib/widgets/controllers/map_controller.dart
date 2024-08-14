@@ -103,9 +103,10 @@ class _MapControllerState extends State<MapController> {
   _getLocation() async {
     try {
       final loc.LocationData _locationResult = await location.getLocation();
-      await FirebaseFirestore.instance.collection('worker_location').doc('otavio').set({
+      await FirebaseFirestore.instance.collection('location').doc('user1').set({
         'latitude': _locationResult.latitude,
         'longitude': _locationResult.longitude,
+        'name': "john",
       }, SetOptions(merge: true));
     } catch (e) {
       print(e);

@@ -83,6 +83,7 @@ flutter:
     - assets/images/greenbackgroundicon.png
     - assets/images/greentruckicon.png
     - assets/images/whitetruckicon.png
+    - assets/images/greenhomeicon.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
