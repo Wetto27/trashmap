@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:trashmap/widgets/recyclers/custom_app_bar.dart';
 
@@ -11,19 +13,34 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  bool _showPassword = false;
 
-  void login() {
-    String email = emailController.text;
-    String password = passwordController.text;
-
-    // Perform login logic here (e.g., validate credentials)
-
-    if (email.isNotEmpty && password.isNotEmpty) {
-      Navigator.pushReplacementNamed(context, '/home');
+  void login() async {
+    try {
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+      
+      // Check if the user is a worker
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .get();
+      
+      if (userDoc.exists && userDoc.get('isWorker') == true) {
+        Navigator.pushReplacementNamed(context, '/home');
+      } else {
+        Navigator.pushReplacementNamed(context, '/user_home');
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Login failed: $e')),
+      );
     }
   }
 
-  bool _showPassword = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -33,6 +33,12 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    allprojects {
+        tasks.withType(JavaCompile){
+            options.compilerArgs <<"-Xlint:deprecation"
+        }
+    }
+
     kotlinOptions {
         jvmTarget = '1.8'
     }
@@ -46,7 +52,7 @@ android {
         applicationId "com.trashmapdevs.trashmap"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -70,3 +76,5 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
     implementation("com.google.firebase:firebase-analytics")
 }
+
+apply plugin: 'com.google.gms.google-services'

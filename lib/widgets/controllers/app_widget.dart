@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:trashmap/pages/home_page.dart';
+import 'package:trashmap/pages/user_home_page.dart';
+import 'package:trashmap/pages/worker_home_page.dart';
 import 'package:trashmap/pages/login_page.dart';
 import 'package:trashmap/pages/register_page.dart';
 
@@ -15,7 +16,8 @@ class AppWidget extends StatelessWidget {
       routes: {
         '/login': (context) => const LoginPage(),
         '/register':(context) => const RegisterPage(),
-        '/home': (context) => const HomePage(),
+        '/worker_home': (context) => const WorkerHomePage(),
+        '/user_home': (context) => const UserHomePage(),
       },
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFF1B571D)),

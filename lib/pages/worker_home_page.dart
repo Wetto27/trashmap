@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:trashmap/widgets/controllers/map_controller.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class WorkerHomePage extends StatefulWidget {
+  const WorkerHomePage({super.key});
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _WorkerHomePageState createState() => _WorkerHomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _WorkerHomePageState extends State<WorkerHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

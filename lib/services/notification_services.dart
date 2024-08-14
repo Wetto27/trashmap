@@ -1,6 +1,6 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
-import 'package:trashmap/pages/home_page.dart';
+import 'package:trashmap/pages/worker_home_page.dart';
 import 'package:trashmap/widgets/controllers/map_controller.dart';
 
 class NotificationService {
@@ -72,7 +72,7 @@ class NotificationService {
           if(payload["navigate"] == "true") {
             MapController.navigatorKey.currentState?.push(
               MaterialPageRoute(
-                builder: (_) => const HomePage(),
+                builder: (_) => const WorkerHomePage(),
               ),
             );
           }
