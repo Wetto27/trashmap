@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
-import 'package:trashmap/widgets/recyclers/custom_app_bar.dart';
+import 'package:trashmap/widgets/recyclers/custom_app_bar_return.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -28,7 +28,6 @@ class _RegisterPageState extends State<RegisterPage> {
     });
 
     try {
-      // Request location permission if the user is not a worker
       LocationData? _locationData;
       if (!_isWorker) {
         bool _serviceEnabled;
@@ -53,26 +52,30 @@ class _RegisterPageState extends State<RegisterPage> {
         _locationData = await _location.getLocation();
       }
 
-      // Register user
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       );
 
-      // Save user data to Firestore
       Map<String, dynamic> userData = {
         'email': emailController.text,
         'role': _isWorker ? 'worker' : 'user',
       };
 
-      if (!_isWorker && _locationData != null) {
-        userData['latitude'] = _locationData.latitude;
-        userData['longitude'] = _locationData.longitude;
-      }
+    if (_isWorker) {
+      userData['workerId'] = workerIdController.text;
+    } else if (_locationData != null) {
+      userData['latitude'] = _locationData.latitude;
+      userData['longitude'] = _locationData.longitude;
+    }
 
-      await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set(userData);
+      String collection = _isWorker ? 'workers' : 'users';
 
-      // Navigate based on role
+      await FirebaseFirestore.instance
+        .collection(collection)
+        .doc(userCredential.user!.uid)
+        .set(userData);
+
       if (_isWorker) {
         Navigator.pushReplacementNamed(context, '/login');
       } else {
@@ -92,7 +95,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Register')),
+      appBar: customAppBarReturn(context, 'Pagina de registro'),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
