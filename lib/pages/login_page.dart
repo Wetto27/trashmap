@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:trashmap/pages/user_home_page.dart';
+import 'package:trashmap/pages/worker_home_page.dart';
 import 'package:trashmap/widgets/recyclers/custom_app_bar.dart';
 
 class LoginPage extends StatefulWidget {
@@ -14,41 +16,60 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  bool _isLoading = false;
   bool _showPassword = false;
 
-  void login() async {
+  Future<void> login() async {
+    setState(() {
+      _isLoading = true;
+    });
+
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       );
-      
-      // Check if the user is a worker
+
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
           .collection('users')
           .doc(userCredential.user!.uid)
           .get();
-      
-    if (userDoc.exists) {
-      String role = userDoc.get('role') ?? 'user'; // Default to 'user' if the role field is missing
 
-      if (role == 'worker') {
-        Navigator.pushReplacementNamed(context, '/worker_home');
+      if (userDoc.exists) {
+        // Regular user
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const UserHomePage()),
+        );
       } else {
-        Navigator.pushReplacementNamed(context, '/user_home');
+        // Check in workers collection
+        DocumentSnapshot workerDoc = await FirebaseFirestore.instance
+            .collection('workers')
+            .doc(userCredential.user!.uid)
+            .get();
+
+        if (workerDoc.exists) {
+          // Worker
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const WorkerHomePage()),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('No user found with this email.')),
+          );
+        }
       }
-    } else {
-      // Handle case where user data does not exist in Firestore
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('User data does not exist in Firestore')),
+        SnackBar(content: Text('Login failed: $e')),
       );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
-  } catch (e) {
-    // Handle login errors
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Login failed: $e')),
-    );
-   }
   }
 
   @override
