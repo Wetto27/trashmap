@@ -58,41 +58,77 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: customAppBarReturn(context, "Pagina de registro"),
-      body: Padding(
+      body: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
-            ),
-            TextField(
-              controller: passwordController,
-              decoration: InputDecoration(
-                labelText: 'Password',
-                suffixIcon: IconButton(
-                  icon: Icon(_showPassword ? Icons.visibility : Icons.visibility_off),
-                  onPressed: () {
-                    setState(() {
-                      _showPassword = !_showPassword;
-                    });
-                  },
+                Image.asset(
+                  'assets/images/greentruckicon.png',
+                  width: 150,
+                  height: 150,
                 ),
-              ),
-              obscureText: !_showPassword,
-            ),
+                SizedBox(
+                  width: 325,
+                  child: TextField(  
+                    keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
+                    controller: emailController,
+                    decoration: InputDecoration(
+                      labelText: 'Email',
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFF1B571D)),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: 325,
+                  child: TextField(
+                        controller: passwordController,
+                        decoration: InputDecoration(
+                          labelText: 'Senha',
+                          suffixIcon: IconButton(
+                            icon: Icon(_showPassword ? Icons.visibility : Icons.visibility_off),
+                            onPressed: () {
+                              setState(() {
+                                _showPassword = !_showPassword;
+                              });
+                            },
+                          ),
+                          border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        obscureText: !_showPassword,
+                      ),
+                ),
             const SizedBox(height: 20),
             ElevatedButton(
+              style: const ButtonStyle(
+                      backgroundColor: WidgetStatePropertyAll<Color>(
+                        Color(0xFF1B571D),
+                      ),
+                    ),
               onPressed: _isLoading ? null : register,
               child: _isLoading
                   ? const CircularProgressIndicator(
                       valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                     )
-                  : const Text('Register'),
+                  : const Text('Registar',
+                    style: TextStyle(
+                      color: Colors.white
+                    ),
+                    ),
             ),
           ],
         ),
+      ),
       ),
     );
   }

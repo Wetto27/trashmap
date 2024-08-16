@@ -114,7 +114,7 @@ class _UserHomePageState extends State<UserHomePage> {
               child: ElevatedButton(
                 onPressed: () {
                   // You can navigate to the next page or perform another action here
-                  Navigator.pushReplacementNamed(context, '/dashboard');
+                  Navigator.pushReplacementNamed(context, '/user_home');
                 },
                 child: Text('Continue'),
               ),
