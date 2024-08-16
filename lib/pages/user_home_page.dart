@@ -22,20 +22,27 @@ class _UserHomePageState extends State<UserHomePage> {
   }
 
   Future<void> _checkIfLocationIsSaved() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .get();
+  User? user = FirebaseAuth.instance.currentUser;
+  if (user != null) {
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get();
 
-      if (userDoc.exists) {
-        setState(() {
-          _locationSaved = userDoc['latitude'] != null && userDoc['longitude'] != null;
-        });
-      }
+    if (userDoc.exists && userDoc.data() != null) {
+      var data = userDoc.data() as Map<String, dynamic>;
+      setState(() {
+        // Safely check if latitude and longitude exist
+        _locationSaved = data.containsKey('latitude') && data.containsKey('longitude');
+      });
+    } else {
+      // Handle case when document does not exist or has no data
+      setState(() {
+        _locationSaved = false;
+      });
     }
   }
+}
 
   void _onMapCreated(GoogleMapController controller) {
     _mapController = controller;
