@@ -146,11 +146,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 const SizedBox(height: 10),
                 GestureDetector(
-                  child: const Text('Criar conta',
-                    style: TextStyle(
-                      color: Color(0xFF1B571D)
-                    ),
-                    ),
+                  child: const Text('Criar conta'),
                   onTap: () {
                     Navigator.pushNamed(context, '/register');
                   },
