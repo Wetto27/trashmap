@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart' as loc;
 import 'package:permission_handler/permission_handler.dart';
-import 'package:trashmap/widgets/recyclers/custom_app_bar_return.dart';
+import 'package:trashmap/widgets/recyclers/custom_app_bar.dart';
 import 'package:trashmap/pages/map_page.dart';
 import 'package:trashmap/services/notification_page.dart';
 
@@ -35,7 +35,7 @@ class _MapControllerState extends State<MapController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppBarReturn(context, 'TRASHMAP'),
+      appBar: customAppBar(context, 'TRASHMAP'),
       body: Column(
         children: [
           TextButton(
@@ -106,7 +106,7 @@ class _MapControllerState extends State<MapController> {
       await FirebaseFirestore.instance.collection('location').doc('user1').set({
         'latitude': _locationResult.latitude,
         'longitude': _locationResult.longitude,
-        'name': "john",
+        'name': 'john'
       }, SetOptions(merge: true));
     } catch (e) {
       print(e);
