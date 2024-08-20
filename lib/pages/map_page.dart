@@ -19,24 +19,17 @@ class _MapPageState extends State<MapPage> {
   bool _isMapCreated = false;
   Set<Marker> _markers = {};
   BitmapDescriptor? customMarker;
+  bool _isTracking = false;
 
 @override
 void initState() {
   super.initState();
   _loadCustomMarker();
   _initializeMap();
-  _startLocationTracking(); 
-}
-
-void _startLocationTracking() async {
-  location.onLocationChanged.listen((loc.LocationData currentLocation) {
-    FirebaseFirestore.instance.collection('location').doc(widget.userId).set({
-      'latitude': currentLocation.latitude,
-      'longitude': currentLocation.longitude,
-    }).catchError((e) {
-      print("Failed to update location: $e");
-    });
-  });
+  if (widget.isWorker) {
+      // Ensure tracking is off initially
+      _isTracking = false;
+    }
 }
 
   void _initializeMap() async {
@@ -87,7 +80,45 @@ void _startLocationTracking() async {
     );
   }
 
-  @override
+void _startLocationTracking() {
+    // Start tracking location updates
+    print('Starting location tracking...');
+    location.onLocationChanged.listen((loc.LocationData currentLocation) {
+      FirebaseFirestore.instance.collection('location').doc(widget.userId).set({
+        'latitude': currentLocation.latitude,
+        'longitude': currentLocation.longitude,
+      });
+    });
+
+    setState(() {
+      _isTracking = true;
+      print('Live tracking activated: $_isTracking');
+    });
+  }
+
+  void _stopLocationTracking() {
+    // Stop tracking location updates
+    print('Stopping location tracking...');
+    setState(() {
+      _isTracking = false;
+      print('Live tracking deactivated: $_isTracking');
+    });
+  }
+  
+   void _storeLocation() async {
+    final loc.LocationData currentLocation = await location.getLocation();
+    await FirebaseFirestore.instance.collection('stored_locations').add({
+      'userId': widget.userId,
+      'latitude': currentLocation.latitude,
+      'longitude': currentLocation.longitude,
+      'timestamp': FieldValue.serverTimestamp(),
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Location stored successfully!')),
+    );
+  }
+
+ @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -100,19 +131,45 @@ void _startLocationTracking() async {
     ),
     iconTheme: IconThemeData(color: Colors.white),
       ),
-      body: GoogleMap(
-        mapType: MapType.normal,
-        markers: _markers,
-        initialCameraPosition: CameraPosition(
-          target: LatLng(0.0, 0.0), // Initial position; will be updated
-          zoom: 14.47,
-        ),
-        onMapCreated: (GoogleMapController controller) {
-          _controller = controller;
-          setState(() {
-            _isMapCreated = true;
-          });
-        },
+      body: Stack(
+        children: [
+          GoogleMap(
+            mapType: MapType.normal,
+            markers: _markers,
+            initialCameraPosition: const CameraPosition(
+              target: LatLng(0.0, 0.0), // Initial position; will be updated
+              zoom: 14.47,
+            ),
+            onMapCreated: (GoogleMapController controller) {
+              _controller = controller;
+              setState(() {
+                _isMapCreated = true;
+              });
+            },
+          ),
+          if (widget.isWorker) // Show buttons only if the user is a worker
+            Positioned(
+              bottom: 20,
+              left: 10,
+              right: 10,
+              child: Column(
+                children: [
+                  ElevatedButton(
+                    onPressed: _storeLocation,
+                    child: const Text('Armazenar Localização'),
+                  ),
+                  ElevatedButton(
+                    onPressed: _isTracking ? null : _startLocationTracking,
+                         child: const Text('Ativar Live Tracking'),
+                  ),
+                  ElevatedButton(
+                    onPressed: _isTracking ? _stopLocationTracking : null,
+                    child: const Text('Desligar Live Tracking'),
+                  ),
+                ],
+              ),
+            ),
+        ],
       ),
     );
   }
