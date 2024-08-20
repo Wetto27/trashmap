@@ -1,8 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:trashmap/pages/user_home_page.dart';
-import 'package:trashmap/pages/worker_home_page.dart';
+import 'package:trashmap/pages/map_page.dart';
 import 'package:trashmap/widgets/recyclers/custom_app_bar.dart';
 
 class LoginPage extends StatefulWidget {
@@ -26,50 +25,54 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text,
+  UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+    email: emailController.text,
+    password: passwordController.text,
+  );
+
+  DocumentSnapshot userDoc = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(userCredential.user!.uid)
+      .get();
+
+  if (userDoc.exists) {
+    // Regular user
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MapPage(userId: userCredential.user!.uid, isWorker: false),
+      ),
+    );
+  } else {
+    // Check in workers collection
+    DocumentSnapshot workerDoc = await FirebaseFirestore.instance
+        .collection('workers')
+        .doc(userCredential.user!.uid)
+        .get();
+
+    if (workerDoc.exists) {
+      // Worker
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MapPage(userId: userCredential.user!.uid, isWorker: true),
+        ),
       );
-
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userCredential.user!.uid)
-          .get();
-
-      if (userDoc.exists) {
-        // Regular user
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const UserHomePage()),
-        );
-      } else {
-        // Check in workers collection
-        DocumentSnapshot workerDoc = await FirebaseFirestore.instance
-            .collection('workers')
-            .doc(userCredential.user!.uid)
-            .get();
-
-        if (workerDoc.exists) {
-          // Worker
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const WorkerHomePage()),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('No user found with this email.')),
-          );
-        }
-      }
-    } catch (e) {
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login failed: $e')),
+        const SnackBar(content: Text('No user found with this email.')),
       );
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
     }
+  }
+} catch (e) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text('Login failed: $e')),
+  );
+} finally {
+  setState(() {
+    _isLoading = false;
+  });
+}
   }
 
   @override

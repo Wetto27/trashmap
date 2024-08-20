@@ -38,26 +38,6 @@ class _MapControllerState extends State<MapController> {
       appBar: customAppBar(context, 'TRASHMAP'),
       body: Column(
         children: [
-          TextButton(
-              onPressed: () {
-                _getLocation();
-              },
-              child: Text('armazenar localização')),
-          TextButton(
-              onPressed: () {
-                _listenLocation();
-              },
-              child: Text('ativar live tracking')),
-          TextButton(
-              onPressed: () {
-                _stopListening();
-              },
-              child: Text('desligar live tracking')),
-              TextButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationPage()));
-              },
-              child: Text('painel de notificações')),
           Expanded(
               child: StreamBuilder(
             stream:
@@ -88,7 +68,7 @@ class _MapControllerState extends State<MapController> {
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) =>
-                                  MapPage(snapshot.data!.docs[index].id)));
+                                  MapPage(userId: snapshot.data!.docs[index].id)));
                         },
                       ),
                     );

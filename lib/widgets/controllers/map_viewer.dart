@@ -40,7 +40,7 @@ class _MapViewerState extends State<MapViewer> {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
-                builder: (context) => MapPage(snapshot.data!.docs[0].id),
+                builder: (context) => MapPage(userId: snapshot.data!.docs[0].id),
               ),
             );
           });
