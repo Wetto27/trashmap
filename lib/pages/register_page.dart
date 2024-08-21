@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:location/location.dart';
 import 'package:trashmap/widgets/recyclers/custom_app_bar_return.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -16,7 +15,6 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  final Location _location = Location();
   bool _showPassword = false;
   bool _isLoading = false;
   
@@ -26,28 +24,6 @@ class _RegisterPageState extends State<RegisterPage> {
     });
 
     try {
-      // Request location permission
-      bool _serviceEnabled;
-      PermissionStatus _permissionGranted;
-
-      _serviceEnabled = await _location.serviceEnabled();
-      if (!_serviceEnabled) {
-        _serviceEnabled = await _location.requestService();
-        if (!_serviceEnabled) {
-          throw Exception('Location services are disabled.');
-        }
-      }
-
-      _permissionGranted = await _location.hasPermission();
-      if (_permissionGranted == PermissionStatus.denied) {
-        _permissionGranted = await _location.requestPermission();
-        if (_permissionGranted != PermissionStatus.granted) {
-          throw Exception('Location permission not granted.');
-        }
-      }
-
-      LocationData _locationData = await _location.getLocation();
-
       // Register user
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: emailController.text,
@@ -58,8 +34,6 @@ class _RegisterPageState extends State<RegisterPage> {
       Map<String, dynamic> userData = {
         'email': emailController.text,
         'role': 'user', // Always set role to 'user'
-        'latitude': _locationData.latitude,
-        'longitude': _locationData.longitude,
       };
 
       await FirebaseFirestore.instance

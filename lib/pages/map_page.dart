@@ -26,51 +26,65 @@ void initState() {
   super.initState();
   _loadCustomMarker();
   _initializeMap();
-  if (widget.isWorker) {
-      // Ensure tracking is off initially
-      _isTracking = false;
+ if (widget.isWorker) {
+      _startLocationTracking();
     }
 }
 
-  void _initializeMap() async {
-    // Listen to location changes from the Firestore
-    FirebaseFirestore.instance
-        .collection('location')
-        .doc(widget.userId)
-        .snapshots()
-        .listen((DocumentSnapshot documentSnapshot) {
-      if (!documentSnapshot.exists) return;
+ void _initializeMap() async {
+    if (widget.isWorker) {
+      // The worker's own map should follow the worker's location.
+      location.onLocationChanged.listen((loc.LocationData currentLocation) {
+        _updateMarkerPosition(currentLocation.latitude!, currentLocation.longitude!);
+        _updateMapLocation(currentLocation.latitude!, currentLocation.longitude!);
 
-      if (documentSnapshot.data() != null) {
-        final data = documentSnapshot.data() as Map<String, dynamic>;
-        final double latitude = data['latitude'];
-        final double longitude = data['longitude'];
+        // Update Firestore with the worker's real-time location.
+        FirebaseFirestore.instance.collection('locations').doc(widget.userId).set({
+          'latitude': currentLocation.latitude,
+          'longitude': currentLocation.longitude,
+          'timestamp': FieldValue.serverTimestamp(),
+        });
+      });
+    } else {
+      // For users, listen to the worker's location updates.
+      FirebaseFirestore.instance
+          .collection('locations')
+          .doc(widget.userId) // This should be the worker's userId
+          .snapshots()
+          .listen((DocumentSnapshot documentSnapshot) {
+        if (!documentSnapshot.exists) return;
 
-        // Update the marker position
-        _updateMarkerPosition(latitude, longitude);
+        if (documentSnapshot.data() != null) {
+          final data = documentSnapshot.data() as Map<String, dynamic>;
+          final double latitude = data['latitude'];
+          final double longitude = data['longitude'];
 
-        // Optionally, animate camera to focus on the new position
-        if (_isMapCreated) {
-          _controller.animateCamera(
-            CameraUpdate.newCameraPosition(
-              CameraPosition(target: LatLng(latitude, longitude), zoom: 14.47),
-            ),
-          );
+          _updateMarkerPosition(latitude, longitude);
         }
-      }
-    });
+      });
+    }
   }
 
-  void _updateMarkerPosition(double latitude, double longitude) {
+ void _updateMarkerPosition(double latitude, double longitude) {
     setState(() {
       _markers = {
         Marker(
-          markerId: MarkerId('user_location'),
+          markerId: const MarkerId('worker_location'),
           position: LatLng(latitude, longitude),
           icon: customMarker!,
         ),
       };
     });
+  }
+
+  void _updateMapLocation(double latitude, double longitude) {
+    if (_isMapCreated) {
+      _controller.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(target: LatLng(latitude, longitude), zoom: 14.47),
+        ),
+      );
+    }
   }
 
   Future<void> _loadCustomMarker() async {

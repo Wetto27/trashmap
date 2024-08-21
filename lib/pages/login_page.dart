@@ -20,60 +20,68 @@ class _LoginPageState extends State<LoginPage> {
   bool _showPassword = false;
 
   Future<void> login() async {
-    setState(() {
-      _isLoading = true;
-    });
+  setState(() {
+    _isLoading = true;
+  });
 
-    try {
-  UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-    email: emailController.text,
-    password: passwordController.text,
-  );
-
-  DocumentSnapshot userDoc = await FirebaseFirestore.instance
-      .collection('users')
-      .doc(userCredential.user!.uid)
-      .get();
-
-  if (userDoc.exists) {
-    // Regular user
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MapPage(userId: userCredential.user!.uid, isWorker: false),
-      ),
+  try {
+    UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+      email: emailController.text.trim(),
+      password: passwordController.text.trim(),
     );
-  } else {
-    // Check in workers collection
-    DocumentSnapshot workerDoc = await FirebaseFirestore.instance
-        .collection('workers')
+
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection('users')
         .doc(userCredential.user!.uid)
         .get();
 
-    if (workerDoc.exists) {
-      // Worker
+    if (userDoc.exists) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => MapPage(userId: userCredential.user!.uid, isWorker: true),
+          builder: (context) => MapPage(userId: userCredential.user!.uid, isWorker: false),
         ),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No user found with this email.')),
-      );
+      // Check in workers collection
+      DocumentSnapshot workerDoc = await FirebaseFirestore.instance
+          .collection('workers')
+          .doc(userCredential.user!.uid)
+          .get();
+
+      if (workerDoc.exists) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MapPage(userId: userCredential.user!.uid, isWorker: true),
+          ),
+        );
+      } else {
+        _showMessage('No user found with this email.');
+      }
     }
+  } on FirebaseAuthException catch (e) {
+    if (e.code == 'user-not-found') {
+      _showMessage('No user found for that email.');
+    } else if (e.code == 'wrong-password') {
+      _showMessage('Wrong password provided for that user.');
+    } else {
+      _showMessage('Login failed: $e');
+    }
+  } catch (e) {
+    _showMessage('An unexpected error occurred. Please try again later.');
+  } finally {
+    setState(() {
+      _isLoading = false;
+    });
   }
-} catch (e) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text('Login failed: $e')),
-  );
-} finally {
-  setState(() {
-    _isLoading = false;
-  });
 }
-  }
+
+void _showMessage(String message) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text(message)),
+  );
+}
 
   @override
   Widget build(BuildContext context) {
