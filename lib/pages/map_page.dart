@@ -151,7 +151,7 @@ void _startLocationTracking() {
             mapType: MapType.normal,
             markers: _markers,
             initialCameraPosition: const CameraPosition(
-              target: LatLng(0.0, 0.0), // Initial position; will be updated
+              target: LatLng(-22.2514897, -45.7043553), // Initial position; will be updated
               zoom: 14.47,
             ),
             onMapCreated: (GoogleMapController controller) {
