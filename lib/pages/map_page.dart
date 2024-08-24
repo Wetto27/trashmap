@@ -21,61 +21,40 @@ class _MapPageState extends State<MapPage> {
   BitmapDescriptor? customMarker;
   bool _isTracking = false;
 
-@override
+ @override
 void initState() {
   super.initState();
   _loadCustomMarker();
   _initializeMap();
- if (widget.isWorker) {
-      _startLocationTracking();
-    }
 }
 
- void _initializeMap() async {
-    if (widget.isWorker) {
-      // The worker's own map should follow the worker's location.
-      location.onLocationChanged.listen((loc.LocationData currentLocation) {
-        _updateMarkerPosition(currentLocation.latitude!, currentLocation.longitude!);
-        _updateMapLocation(currentLocation.latitude!, currentLocation.longitude!);
+void _initializeMap() {
+  FirebaseFirestore.instance
+      .collection('shared_locations')
+      .doc('worker_location')
+      .snapshots()
+      .listen((DocumentSnapshot documentSnapshot) {
+    if (documentSnapshot.exists) {
+      final data = documentSnapshot.data() as Map<String, dynamic>;
+      final double latitude = data['latitude'];
+      final double longitude = data['longitude'];
 
-        // Update Firestore with the worker's real-time location.
-        FirebaseFirestore.instance.collection('locations').doc(widget.userId).set({
-          'latitude': currentLocation.latitude,
-          'longitude': currentLocation.longitude,
-          'timestamp': FieldValue.serverTimestamp(),
-        });
-      });
-    } else {
-      // For users, listen to the worker's location updates.
-      FirebaseFirestore.instance
-          .collection('locations')
-          .doc(widget.userId) // This should be the worker's userId
-          .snapshots()
-          .listen((DocumentSnapshot documentSnapshot) {
-        if (!documentSnapshot.exists) return;
-
-        if (documentSnapshot.data() != null) {
-          final data = documentSnapshot.data() as Map<String, dynamic>;
-          final double latitude = data['latitude'];
-          final double longitude = data['longitude'];
-
-          _updateMarkerPosition(latitude, longitude);
-        }
-      });
+      _updateMarkerPosition(latitude, longitude);
     }
-  }
+  });
+}
 
  void _updateMarkerPosition(double latitude, double longitude) {
-    setState(() {
-      _markers = {
-        Marker(
-          markerId: const MarkerId('worker_location'),
-          position: LatLng(latitude, longitude),
-          icon: customMarker!,
-        ),
-      };
-    });
-  }
+  setState(() {
+    _markers = {
+      Marker(
+        markerId: const MarkerId('worker_location'),
+        position: LatLng(latitude, longitude),
+        icon: customMarker!,
+      ),
+    };
+  });
+}
 
   void _updateMapLocation(double latitude, double longitude) {
     if (_isMapCreated) {
@@ -95,20 +74,18 @@ void initState() {
   }
 
 void _startLocationTracking() {
-    // Start tracking location updates
-    print('Starting location tracking...');
-    location.onLocationChanged.listen((loc.LocationData currentLocation) {
-      FirebaseFirestore.instance.collection('location').doc(widget.userId).set({
-        'latitude': currentLocation.latitude,
-        'longitude': currentLocation.longitude,
-      });
+  location.onLocationChanged.listen((loc.LocationData currentLocation) {
+    FirebaseFirestore.instance.collection('shared_locations').doc('worker_location').set({
+      'latitude': currentLocation.latitude,
+      'longitude': currentLocation.longitude,
+      'timestamp': FieldValue.serverTimestamp(),
     });
+  });
 
-    setState(() {
-      _isTracking = true;
-      print('Live tracking activated: $_isTracking');
-    });
-  }
+  setState(() {
+    _isTracking = true;
+  });
+}
 
   void _stopLocationTracking() {
     // Stop tracking location updates

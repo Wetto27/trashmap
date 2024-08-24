@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:trashmap/firebase_options.dart';
 import 'package:trashmap/widgets/controllers/app_widget.dart';
 
+
 void main() async {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp(
