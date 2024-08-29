@@ -7,7 +7,7 @@ class MapPage extends StatefulWidget {
   final String userId;
   final bool isWorker;
 
-  MapPage({required this.userId, this.isWorker = false});
+  MapPage({super.key, required this.userId, this.isWorker = false});
 
   @override
   _MapPageState createState() => _MapPageState();
@@ -21,12 +21,15 @@ class _MapPageState extends State<MapPage> {
   BitmapDescriptor? customMarker;
   bool _isTracking = false;
 
- @override
-void initState() {
-  super.initState();
-  _loadCustomMarker();
-  _initializeMap();
-}
+@override
+  void initState() {
+    super.initState();
+    _loadCustomMarker();
+    _initializeMap();
+    if (!widget.isWorker) {
+      _loadUserHomeLocation();
+    }
+  }
 
 void _initializeMap() {
   FirebaseFirestore.instance
@@ -63,6 +66,38 @@ void _initializeMap() {
           CameraPosition(target: LatLng(latitude, longitude), zoom: 14.47),
         ),
       );
+    }
+  }
+
+   Future<void> _loadUserHomeLocation() async {
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.userId)
+        .get();
+
+    if (userDoc.exists) {
+      final data = userDoc.data() as Map<String, dynamic>;
+      final homeLocation = data['homeLocation'];
+      if (homeLocation != null) {
+        final double latitude = homeLocation['latitude'];
+        final double longitude = homeLocation['longitude'];
+
+        setState(() {
+          _markers.add(
+            Marker(
+              markerId: const MarkerId('home_location'),
+              position: LatLng(latitude, longitude),
+              infoWindow: const InfoWindow(title: 'Home Location'),
+            ),
+          );
+        });
+
+        if (_isMapCreated) {
+          _controller.animateCamera(
+            CameraUpdate.newLatLngZoom(LatLng(latitude, longitude), 14.47),
+          );
+        }
+      }
     }
   }
 
@@ -109,18 +144,21 @@ void _startLocationTracking() {
     );
   }
 
- @override
+@override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF1B571D),
         centerTitle: true,
-        title: Text(widget.isWorker ? 'Worker Map' : 'User Map',  style: TextStyle(color: Colors.white),),
+        title: Text(
+          widget.isWorker ? 'Worker Map' : 'User Map',
+          style: const TextStyle(color: Colors.white),
+        ),
         leading: IconButton(
-      icon: Icon(Icons.arrow_back, color: Colors.white),
-      onPressed: () => Navigator.pushNamed(context, '/login'),
-    ),
-    iconTheme: IconThemeData(color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pushNamed(context, '/login'),
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Stack(
         children: [
@@ -151,7 +189,7 @@ void _startLocationTracking() {
                   ),
                   ElevatedButton(
                     onPressed: _isTracking ? null : _startLocationTracking,
-                         child: const Text('Ativar Live Tracking'),
+                    child: const Text('Ativar Live Tracking'),
                   ),
                   ElevatedButton(
                     onPressed: _isTracking ? _stopLocationTracking : null,

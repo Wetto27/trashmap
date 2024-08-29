@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:trashmap/pages/map_page.dart';
+import 'package:trashmap/pages/select_location_page.dart';
 import 'package:trashmap/widgets/recyclers/custom_app_bar.dart';
 
 class LoginPage extends StatefulWidget {
@@ -19,31 +20,44 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
   bool _showPassword = false;
 
-  Future<void> login() async {
-    setState(() {
-      _isLoading = true;
-    });
+ Future<void> login() async {
+  setState(() {
+    _isLoading = true;
+  });
 
-    try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-      );
+  try {
+    UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+      email: emailController.text.trim(),
+      password: passwordController.text.trim(),
+    );
 
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userCredential.user!.uid)
-          .get();
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userCredential.user!.uid)
+        .get();
 
-      if (userDoc.exists) {
+    if (userDoc.exists) {
+      // Safely cast the document data to a Map
+      final data = userDoc.data() as Map<String, dynamic>;
+      
+      if (data['homeLocation'] == null) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) =>
-                MapPage(userId: userCredential.user!.uid, isWorker: false),
+            builder: (context) => SelectHomeLocationPage(
+                userId: userCredential.user!.uid),
           ),
         );
       } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MapPage(
+                userId: userCredential.user!.uid, isWorker: false),
+          ),
+        );
+      } 
+    } else {
         // Check in workers collection
         DocumentSnapshot workerDoc = await FirebaseFirestore.instance
             .collection('workers')
@@ -61,23 +75,24 @@ class _LoginPageState extends State<LoginPage> {
         } else {
           _showMessage('No user found with this email.');
         }
-      }
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        _showMessage('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        _showMessage('Wrong password provided for that user.');
-      } else {
-        _showMessage('Login failed: $e');
-      }
-    } catch (e) {
-      _showMessage('An unexpected error occurred. Please try again later.');
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
     }
+  } on FirebaseAuthException catch (e) {
+    if (e.code == 'user-not-found') {
+      _showMessage('No user found for that email.');
+    } else if (e.code == 'wrong-password') {
+      _showMessage('Wrong password provided for that user.');
+    } else {
+      _showMessage('Login failed: $e');
+    }
+  } catch (e) {
+    _showMessage('An unexpected error occurred. Please try again later.');
+  } finally {
+    setState(() {
+      _isLoading = false;
+    });
   }
+}
+
 
   void _showMessage(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
