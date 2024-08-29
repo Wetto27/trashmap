@@ -19,12 +19,14 @@ class _MapPageState extends State<MapPage> {
   bool _isMapCreated = false;
   Set<Marker> _markers = {};
   BitmapDescriptor? customMarker;
+  BitmapDescriptor? userHomeMarker;
   bool _isTracking = false;
 
 @override
   void initState() {
     super.initState();
     _loadCustomMarker();
+    _loadUserHomeMarker();
     _initializeMap();
     if (!widget.isWorker) {
       _loadUserHomeLocation();
@@ -48,16 +50,17 @@ void _initializeMap() {
 }
 
  void _updateMarkerPosition(double latitude, double longitude) {
-  setState(() {
-    _markers = {
-      Marker(
-        markerId: const MarkerId('worker_location'),
-        position: LatLng(latitude, longitude),
-        icon: customMarker!,
-      ),
-    };
-  });
-}
+    setState(() {
+      _markers.removeWhere((marker) => marker.markerId == const MarkerId('worker_location'));
+      _markers.add(
+        Marker(
+          markerId: const MarkerId('worker_location'),
+          position: LatLng(latitude, longitude),
+          icon: customMarker!,
+        ),
+      );
+    });
+  }
 
   void _updateMapLocation(double latitude, double longitude) {
     if (_isMapCreated) {
@@ -83,10 +86,12 @@ void _initializeMap() {
         final double longitude = homeLocation['longitude'];
 
         setState(() {
+          _markers.removeWhere((marker) => marker.markerId == const MarkerId('home_location'));
           _markers.add(
             Marker(
               markerId: const MarkerId('home_location'),
               position: LatLng(latitude, longitude),
+              icon: userHomeMarker!,
               infoWindow: const InfoWindow(title: 'Home Location'),
             ),
           );
@@ -108,6 +113,13 @@ void _initializeMap() {
     );
   }
 
+  Future<void> _loadUserHomeMarker() async {
+    userHomeMarker = await BitmapDescriptor.asset(
+      const ImageConfiguration(size: Size(48, 48)),
+      'assets/images/greenhomeicon.png',  
+    );
+  }
+
 void _startLocationTracking() {
   location.onLocationChanged.listen((loc.LocationData currentLocation) {
     FirebaseFirestore.instance.collection('shared_locations').doc('worker_location').set({
@@ -116,6 +128,7 @@ void _startLocationTracking() {
       'timestamp': FieldValue.serverTimestamp(),
     });
   });
+
 
   setState(() {
     _isTracking = true;
@@ -144,7 +157,7 @@ void _startLocationTracking() {
     );
   }
 
-@override
+ @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -173,6 +186,9 @@ void _startLocationTracking() {
               _controller = controller;
               setState(() {
                 _isMapCreated = true;
+                if (!widget.isWorker) {
+                  _loadUserHomeLocation();
+                }
               });
             },
           ),
@@ -193,7 +209,7 @@ void _startLocationTracking() {
                   ),
                   ElevatedButton(
                     onPressed: _isTracking ? _stopLocationTracking : null,
-                    child: const Text('Desligar Live Tracking'),
+                    child: const Text('Desativar Live Tracking'),
                   ),
                 ],
               ),
