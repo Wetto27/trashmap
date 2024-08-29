@@ -17,6 +17,7 @@ class AppWidget extends StatelessWidget {
         '/register': (context) => const RegisterPage(),
         '/selectHomeLocation': (context) => SelectHomeLocationPage(userId: ModalRoute.of(context)!.settings.arguments as String),
         '/userMap': (context) => MapPage(userId: ModalRoute.of(context)!.settings.arguments as String, isWorker: false),
+        '/workerMap': (context) => MapPage(userId: ModalRoute.of(context)!.settings.arguments as String, isWorker: true),
       },
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1B571D)),

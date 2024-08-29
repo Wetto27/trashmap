@@ -34,22 +34,22 @@ class _MapPageState extends State<MapPage> {
   }
 
 void _initializeMap() {
-  FirebaseFirestore.instance
-      .collection('shared_locations')
-      .doc('worker_location')
-      .snapshots()
-      .listen((DocumentSnapshot documentSnapshot) {
-    if (documentSnapshot.exists) {
-      final data = documentSnapshot.data() as Map<String, dynamic>;
-      final double latitude = data['latitude'];
-      final double longitude = data['longitude'];
+    FirebaseFirestore.instance
+        .collection('shared_locations')
+        .doc('worker_location')
+        .snapshots()
+        .listen((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        final data = documentSnapshot.data() as Map<String, dynamic>;
+        final double latitude = data['latitude'];
+        final double longitude = data['longitude'];
 
-      _updateMarkerPosition(latitude, longitude);
-    }
-  });
-}
+        _updateMarkerPosition(latitude, longitude);
+      }
+    });
+  }
 
- void _updateMarkerPosition(double latitude, double longitude) {
+  void _updateMarkerPosition(double latitude, double longitude) {
     setState(() {
       _markers.removeWhere((marker) => marker.markerId == const MarkerId('worker_location'));
       _markers.add(
