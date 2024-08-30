@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:location/location.dart' as loc;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SelectHomeLocationPage extends StatefulWidget {
@@ -16,7 +17,8 @@ class _SelectHomeLocationPageState extends State<SelectHomeLocationPage> {
   late GoogleMapController _controller;
   LatLng? _selectedLocation;
   bool _isMapCreated = false;
-  final Location _location = Location();
+  final loc.Location _location = loc.Location();
+  String? _address;
 
   @override
   void initState() {
@@ -32,10 +34,28 @@ class _SelectHomeLocationPageState extends State<SelectHomeLocationPage> {
     ));
   }
 
-  void _onMapTapped(LatLng position) {
+  void _onMapTapped(LatLng position) async {
     setState(() {
       _selectedLocation = position;
     });
+
+    // Get the address from the coordinates
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        _selectedLocation!.latitude,
+        _selectedLocation!.longitude,
+      );
+
+      if (placemarks.isNotEmpty) {
+        Placemark placemark = placemarks[0];
+        setState(() {
+          _address =
+              '${placemark.street}, ${placemark.locality}, ${placemark.postalCode}, ${placemark.country}';
+        });
+      }
+    } catch (e) {
+      print('Error getting address: $e');
+    }
   }
 
   Future<void> _saveHomeLocation() async {
@@ -47,6 +67,7 @@ class _SelectHomeLocationPageState extends State<SelectHomeLocationPage> {
         'homeLocation': {
           'latitude': _selectedLocation!.latitude,
           'longitude': _selectedLocation!.longitude,
+          'address': _address,
         }
       });
 
