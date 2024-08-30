@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
   import 'package:flutter_local_notifications/flutter_local_notifications.dart';
   import 'package:google_maps_flutter/google_maps_flutter.dart';
   import 'package:location/location.dart' as loc;
+import 'package:shared_preferences/shared_preferences.dart';
   import 'dart:math' as math;
 
   import 'package:trashmap/main.dart';
@@ -100,9 +101,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
   );
 }
 
-  Future<void> _sendNotificationToUser(String userId) async {
-  // Show notification
-  await showNotification();
+Future<void> _sendNotificationToUser(String userId) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  bool notificationSent = prefs.getBool('notification_sent_$userId') ?? false;
+
+  if (!notificationSent) {
+    // Show notification
+    await showNotification();
+
+    // Set the flag to true
+    await prefs.setBool('notification_sent_$userId', true);
+  }
 }
 
     void _updateMapLocation(double latitude, double longitude) {
