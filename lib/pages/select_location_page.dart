@@ -80,14 +80,23 @@ class _SelectHomeLocationPageState extends State<SelectHomeLocationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Select Home Location'),
-      ),
+      appBar: new AppBar(
+          backgroundColor: Color(0xFF1B571D),
+          title: Text(
+              "   Selecione seu endereço",
+              style: TextStyle(color: Colors.white),
+            ),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Navigator.pushNamed(context, '/login'),
+          ),
+          iconTheme: const IconThemeData(color: Colors.white),
+          ),
       body: Stack(
         children: [
           GoogleMap(
             initialCameraPosition: const CameraPosition(
-              target: LatLng(0, 0),
+              target: LatLng(-22.2514897, -45.7043553),
               zoom: 2,
             ),
             onMapCreated: (controller) {
@@ -109,11 +118,19 @@ class _SelectHomeLocationPageState extends State<SelectHomeLocationPage> {
           ),
           Positioned(
             bottom: 20,
-            left: 10,
-            right: 10,
+            left: 100,
+            right: 100,
             child: ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: WidgetStatePropertyAll<Color>(
+                  Color(0xFF1B571D),
+                ),
+              ),
               onPressed: _saveHomeLocation,
-              child: const Text('Continue'),
+              child: const Text(
+                'Continuar',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ),
         ],

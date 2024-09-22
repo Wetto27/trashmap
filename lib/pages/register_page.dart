@@ -69,8 +69,8 @@ class _RegisterPageState extends State<RegisterPage> {
             children: [
               Image.asset(
                 'assets/images/greentruckicon.png',
-                width: 150,
-                height: 150,
+                width: 120,
+                height: 120,
               ),
               SizedBox(
                 width: 325,
@@ -127,7 +127,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               AlwaysStoppedAnimation<Color>(Colors.white),
                         )
                       : const Text(
-                          'Registar',
+                          'Registrar',
                           style: TextStyle(color: Colors.white),
                         ),
                 ),

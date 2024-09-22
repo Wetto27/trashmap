@@ -114,8 +114,8 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               Image.asset(
                 'assets/images/greentruckicon.png',
-                width: 150,
-                height: 150,
+                width: 120,
+                height: 120,
               ),
               SizedBox(
                 width: 325,
