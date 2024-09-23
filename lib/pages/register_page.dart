@@ -24,17 +24,17 @@ class _RegisterPageState extends State<RegisterPage> {
     });
 
     try {
-      // Register user
+      // Registra o usuário com email e senha
       UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       );
 
-      // Save user data to Firestore
+      // Salva os dados do usuário no Firestore
       Map<String, dynamic> userData = {
         'email': emailController.text,
-        'role': 'user', // Always set role to 'user'
+        'role': 'user', // Sempre define o papel como 'user'
       };
 
       await FirebaseFirestore.instance
@@ -42,9 +42,10 @@ class _RegisterPageState extends State<RegisterPage> {
           .doc(userCredential.user!.uid)
           .set(userData);
 
-      // Navigate to login page
+      // Navega para a página de login
       Navigator.pushReplacementNamed(context, '/login');
     } catch (e) {
+      // Exibe uma mensagem de erro se o registro falhar
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Registration failed: $e')),
       );

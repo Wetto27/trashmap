@@ -20,51 +20,56 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
   bool _showPassword = false;
 
- Future<void> login() async {
-  setState(() {
-    _isLoading = true;
-  });
+  Future<void> login() async {
+    setState(() {
+      _isLoading = true;
+    });
 
-  try {
-    UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-      email: emailController.text.trim(),
-      password: passwordController.text.trim(),
-    );
+    try {
+      // Autentica o usuário com email e senha
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
 
-    DocumentSnapshot userDoc = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userCredential.user!.uid)
-        .get();
+      // Verifica se o usuário é um "user" ou um "worker"
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .get();
 
-    if (userDoc.exists) {
-      // Safely cast the document data to a Map
-      final data = userDoc.data() as Map<String, dynamic>;
-      
-      if (data['homeLocation'] == null) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SelectHomeLocationPage(
-                userId: userCredential.user!.uid),
-          ),
-        );
+      if (userDoc.exists) {
+        // Se o usuário existe na coleção "users", verifica se ele já selecionou sua localização
+        final data = userDoc.data() as Map<String, dynamic>;
+        
+        if (data['homeLocation'] == null) {
+          // Se não selecionou, redireciona para a página de seleção de localização
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SelectHomeLocationPage(
+                  userId: userCredential.user!.uid),
+            ),
+          );
+        } else {
+          // Se já selecionou, redireciona para o mapa do usuário
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MapPage(
+                  userId: userCredential.user!.uid, isWorker: false),
+            ),
+          );
+        } 
       } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => MapPage(
-                userId: userCredential.user!.uid, isWorker: false),
-          ),
-        );
-      } 
-    } else {
-        // Check in workers collection
+        // Se o usuário não existe na coleção "users", verifica na coleção "workers"
         DocumentSnapshot workerDoc = await FirebaseFirestore.instance
             .collection('workers')
             .doc(userCredential.user!.uid)
             .get();
 
         if (workerDoc.exists) {
+          // Se o usuário é um "worker", redireciona para o mapa do worker
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -73,28 +78,31 @@ class _LoginPageState extends State<LoginPage> {
             ),
           );
         } else {
+          // Se não for encontrado em nenhuma coleção, exibe uma mensagem de erro
           _showMessage('No user found with this email.');
         }
+      }
+    } on FirebaseAuthException catch (e) {
+      // Trata erros de autenticação
+      if (e.code == 'user-not-found') {
+        _showMessage('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        _showMessage('Wrong password provided for that user.');
+      } else {
+        _showMessage('Login failed: $e');
+      }
+    } catch (e) {
+      // Trata outros erros inesperados
+      _showMessage('An unexpected error occurred. Please try again later.');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
-  } on FirebaseAuthException catch (e) {
-    if (e.code == 'user-not-found') {
-      _showMessage('No user found for that email.');
-    } else if (e.code == 'wrong-password') {
-      _showMessage('Wrong password provided for that user.');
-    } else {
-      _showMessage('Login failed: $e');
-    }
-  } catch (e) {
-    _showMessage('An unexpected error occurred. Please try again later.');
-  } finally {
-    setState(() {
-      _isLoading = false;
-    });
   }
-}
-
 
   void _showMessage(String message) {
+    // Exibe uma mensagem de snackbar
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message)),
     );

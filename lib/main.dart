@@ -1,21 +1,20 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:trashmap/firebase_options.dart';
 import 'package:trashmap/widgets/controllers/app_widget.dart';
 
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
-
 void main() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform
-);
+  WidgetsFlutterBinding.ensureInitialized();
 
-AwesomeNotifications().initialize(
-    null, // null means no default icon
+  // Inicializa o Firebase
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  // Inicializa as notificações locais
+  AwesomeNotifications().initialize(
+    null, // null significa que não há ícone padrão
     [
       NotificationChannel(
         channelKey: 'worker_proximity',
@@ -30,7 +29,9 @@ AwesomeNotifications().initialize(
     ],
   );
 
+  // Solicita permissão para enviar notificações
   await AwesomeNotifications().requestPermissionToSendNotifications();
 
+  // Executa o aplicativo
   runApp(const AppWidget());
 }

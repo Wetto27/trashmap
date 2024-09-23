@@ -1,13 +1,10 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as loc;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math' as math;
-
-import 'package:trashmap/main.dart';
 
 class MapPage extends StatefulWidget {
   final String userId;
@@ -40,6 +37,7 @@ class _MapPageState extends State<MapPage> {
   }
 
   void _initializeMap() {
+    // Escuta as atualizações da localização do worker
     FirebaseFirestore.instance
         .collection('shared_locations')
         .doc('worker_location')
@@ -57,8 +55,10 @@ class _MapPageState extends State<MapPage> {
 
   void _updateMarkerPosition(double latitude, double longitude) async {
     setState(() {
+      // Remove o marcador anterior do worker
       _markers.removeWhere(
           (marker) => marker.markerId == const MarkerId('worker_location'));
+      // Adiciona o novo marcador do worker
       _markers.add(
         Marker(
           markerId: const MarkerId('worker_location'),
@@ -68,7 +68,7 @@ class _MapPageState extends State<MapPage> {
       );
     });
 
-    // Check proximity to user's home location
+    // Verifica a proximidade do worker com a casa do usuário
     DocumentSnapshot userDoc = await FirebaseFirestore.instance
         .collection('users')
         .doc(widget.userId)
@@ -84,8 +84,7 @@ class _MapPageState extends State<MapPage> {
         double distance = calculateDistance(userHomeLatLng, workerLatLng);
 
         if (distance <= 100) {
-          // Threshold distance in meters
-          // Send notification to the user
+          // Se o worker estiver a menos de 100 metros da casa do usuário, envia uma notificação
           await _sendNotificationToUser(widget.userId);
         }
       }
@@ -93,6 +92,7 @@ class _MapPageState extends State<MapPage> {
   }
 
   Future<void> showNotification() async {
+    // Exibe uma notificação local
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
         id: 10,
@@ -109,16 +109,17 @@ class _MapPageState extends State<MapPage> {
     bool notificationSent = prefs.getBool('notification_sent_$userId') ?? false;
 
     if (!notificationSent) {
-      // Show notification
+      // Exibe a notificação
       await showNotification();
 
-      // Set the flag to true
+      // Define o flag para true para evitar notificações repetidas
       await prefs.setBool('notification_sent_$userId', true);
     }
   }
 
   void _updateMapLocation(double latitude, double longitude) {
     if (_isMapCreated) {
+      // Atualiza a posição da câmera do mapa
       _controller.animateCamera(
         CameraUpdate.newCameraPosition(
           CameraPosition(target: LatLng(latitude, longitude), zoom: 14.47),
@@ -141,8 +142,10 @@ class _MapPageState extends State<MapPage> {
         final double longitude = homeLocation['longitude'];
 
         setState(() {
+          // Remove o marcador anterior da casa do usuário
           _markers.removeWhere(
               (marker) => marker.markerId == const MarkerId('home_location'));
+          // Adiciona o novo marcador da casa do usuário
           _markers.add(
             Marker(
               markerId: const MarkerId('home_location'),
@@ -154,6 +157,7 @@ class _MapPageState extends State<MapPage> {
         });
 
         if (_isMapCreated) {
+          // Atualiza a posição da câmera do mapa para a casa do usuário
           _controller.animateCamera(
             CameraUpdate.newLatLngZoom(LatLng(latitude, longitude), 14.47),
           );
@@ -163,6 +167,7 @@ class _MapPageState extends State<MapPage> {
   }
 
   Future<void> _loadCustomMarker() async {
+    // Carrega o ícone personalizado para o marcador do worker
     customMarker = await BitmapDescriptor.asset(
       const ImageConfiguration(size: Size(48, 48)),
       'assets/images/greentruckicon.png',
@@ -170,6 +175,7 @@ class _MapPageState extends State<MapPage> {
   }
 
   Future<void> _loadUserHomeMarker() async {
+    // Carrega o ícone personalizado para o marcador da casa do usuário
     userHomeMarker = await BitmapDescriptor.asset(
       const ImageConfiguration(size: Size(48, 48)),
       'assets/images/greenhomeicon.png',
@@ -177,6 +183,7 @@ class _MapPageState extends State<MapPage> {
   }
 
   void _startLocationTracking() {
+    // Inicia o rastreamento da localização do worker em tempo real
     location.onLocationChanged.listen((loc.LocationData currentLocation) {
       FirebaseFirestore.instance
           .collection('shared_locations')
@@ -194,7 +201,7 @@ class _MapPageState extends State<MapPage> {
   }
 
   void _stopLocationTracking() {
-    // Stop tracking location updates
+    // Para o rastreamento da localização do worker
     print('Stopping location tracking...');
     setState(() {
       _isTracking = false;
@@ -203,6 +210,7 @@ class _MapPageState extends State<MapPage> {
   }
 
   void _storeLocation() async {
+    // Armazena a localização atual do worker no Firestore
     final loc.LocationData currentLocation = await location.getLocation();
     await FirebaseFirestore.instance.collection('stored_locations').add({
       'userId': widget.userId,
@@ -238,7 +246,7 @@ class _MapPageState extends State<MapPage> {
             markers: _markers,
             initialCameraPosition: const CameraPosition(
               target: LatLng(-22.2514897,
-                  -45.7043553), // Initial position; will be updated
+                  -45.7043553), // Posição inicial; será atualizada
               zoom: 14.47,
             ),
             onMapCreated: (GoogleMapController controller) {
@@ -251,9 +259,9 @@ class _MapPageState extends State<MapPage> {
               });
             },
           ),
-          if (widget.isWorker) // Show buttons only if the user is a worker
+          if (widget.isWorker) // Mostra os botões apenas se o usuário for um worker
             Positioned(
-              bottom: 20,
+                            bottom: 20,
               left: 10,
               right: 10,
               child: Column(
@@ -298,7 +306,8 @@ class _MapPageState extends State<MapPage> {
   }
 
   double calculateDistance(LatLng pos1, LatLng pos2) {
-    const double earthRadius = 6371000; // meters
+    // Calcula a distância entre duas coordenadas geográficas usando a fórmula de Haversine
+    const double earthRadius = 6371000; // metros
     double dLat = radians(pos2.latitude - pos1.latitude);
     double dLng = radians(pos2.longitude - pos1.longitude);
     double a = math.sin(dLat / 2) * math.sin(dLat / 2) +
@@ -312,6 +321,7 @@ class _MapPageState extends State<MapPage> {
   }
 
   double radians(double degrees) {
+    // Converte graus para radianos
     return degrees * (math.pi / 180);
   }
 }

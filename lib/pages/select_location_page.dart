@@ -27,6 +27,7 @@ class _SelectHomeLocationPageState extends State<SelectHomeLocationPage> {
   }
 
   Future<void> _getDeviceLocation() async {
+    // Obtém a localização atual do dispositivo e centraliza o mapa nessa localização
     final currentLocation = await _location.getLocation();
     _controller.animateCamera(CameraUpdate.newLatLngZoom(
       LatLng(currentLocation.latitude!, currentLocation.longitude!),
@@ -39,7 +40,7 @@ class _SelectHomeLocationPageState extends State<SelectHomeLocationPage> {
       _selectedLocation = position;
     });
 
-    // Get the address from the coordinates
+    // Obtém o endereço a partir das coordenadas
     try {
       List<Placemark> placemarks = await placemarkFromCoordinates(
         _selectedLocation!.latitude,
@@ -60,6 +61,7 @@ class _SelectHomeLocationPageState extends State<SelectHomeLocationPage> {
 
   Future<void> _saveHomeLocation() async {
     if (_selectedLocation != null) {
+      // Salva a localização selecionada no Firestore
       await FirebaseFirestore.instance
           .collection('users')
           .doc(widget.userId)
@@ -71,7 +73,7 @@ class _SelectHomeLocationPageState extends State<SelectHomeLocationPage> {
         }
       });
 
-      // Navigate to the user map page
+      // Navega para a página do mapa do usuário
       Navigator.pushReplacementNamed(context, '/userMap',
           arguments: widget.userId);
     }
@@ -80,18 +82,18 @@ class _SelectHomeLocationPageState extends State<SelectHomeLocationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: new AppBar(
-          backgroundColor: Color(0xFF1B571D),
-          title: Text(
-              "   Selecione seu endereço",
-              style: TextStyle(color: Colors.white),
-            ),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.pushNamed(context, '/login'),
-          ),
-          iconTheme: const IconThemeData(color: Colors.white),
-          ),
+      appBar: AppBar(
+        backgroundColor: Color(0xFF1B571D),
+        title: Text(
+          "Selecione seu endereço",
+          style: TextStyle(color: Colors.white),
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pushNamed(context, '/login'),
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
       body: Stack(
         children: [
           GoogleMap(
