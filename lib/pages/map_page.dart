@@ -24,6 +24,7 @@ class _MapPageState extends State<MapPage> {
   BitmapDescriptor? customMarker;
   BitmapDescriptor? userHomeMarker;
   bool _isTracking = false;
+  bool _notificationSent = false; // Flag to track notification status
 
   @override
   void initState() {
@@ -83,9 +84,17 @@ class _MapPageState extends State<MapPage> {
         LatLng workerLatLng = LatLng(latitude, longitude);
         double distance = calculateDistance(userHomeLatLng, workerLatLng);
 
-        if (distance <= 100) {
-          // Se o worker estiver a menos de 100 metros da casa do usuário, envia uma notificação
+        if (distance <= 100 && !_notificationSent) {
+          // Se o worker estiver a menos de 100 metros da casa do usuário e a notificação não foi enviada, envia uma notificação
           await _sendNotificationToUser(widget.userId);
+          setState(() {
+            _notificationSent = true; // Set the flag to true after sending the notification
+          });
+        } else if (distance > 100) {
+          // Reset the flag if the worker moves away from the user's house
+          setState(() {
+            _notificationSent = false;
+          });
         }
       }
     }
@@ -97,8 +106,8 @@ class _MapPageState extends State<MapPage> {
       content: NotificationContent(
         id: 10,
         channelKey: 'worker_proximity',
-        title: 'Worker Near Your Home',
-        body: 'The worker is near your home location!',
+        title: 'O lixeiro esta perto!',
+        body: 'O lixeiro esta passando pela rua de sua casa.',
         notificationLayout: NotificationLayout.BigPicture,
       ),
     );
@@ -261,7 +270,7 @@ class _MapPageState extends State<MapPage> {
           ),
           if (widget.isWorker) // Mostra os botões apenas se o usuário for um worker
             Positioned(
-                            bottom: 20,
+              bottom: 20,
               left: 10,
               right: 10,
               child: Column(
